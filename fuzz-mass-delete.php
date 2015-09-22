@@ -4,7 +4,7 @@
  * Plugin URI:
  * Description: Removes all content from a wordpress installation
  * Author: ThemeFuzz
- * Version: 1.0.0
+ * Version: 1.0
  */
 
 class Fuzz_Mass_Delete{

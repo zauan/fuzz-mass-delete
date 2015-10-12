@@ -12,7 +12,42 @@ class Fuzz_Mass_Delete{
 
 		add_action( 'admin_menu', array( &$this, 'register_admin_menu' ) );
 		add_action( 'init', array( &$this, 'check_delete' ), 9999 );
+		add_action( 'init', array( &$this, 'check_reset_options' ), 9999 );
 	}
+
+	function check_reset_options(){
+		if ( ! isset($_GET['fuzz_reset_theme_options']) || ! wp_verify_nonce($_GET['fuzz_reset_theme_options'], 'doing_something')) {
+			return 'Nonce not good';
+		}
+
+		$options_field = ZN()->theme_data['options_prefix'];
+		$saved_values = array();
+
+		$file =  THEME_BASE."/template_helpers/dummy_content/theme_options.txt";
+		if( ! is_file( $file ) ) {
+			include(THEME_BASE.'/template_helpers/options/theme-options.php');
+
+			foreach ( $admin_options as $key => $option ) {
+
+				if( !empty( $option['std'] ) )
+				{
+					$saved_values[$option['parent']][$option['id']] = $option['std'];
+				}
+
+			}
+		}
+		else{
+			$data = file_get_contents( $file );
+			$saved_values = json_decode( $data, true );
+		}
+				print_z( $file );
+		update_option( $options_field , $saved_values );
+		generate_options_css();
+		ZN()->pagebuilder->refresh_pb_data();
+
+
+	}
+
 
 	function check_delete(){
 		if ( ! isset($_GET['fuzz_mass_delete']) || ! wp_verify_nonce($_GET['fuzz_mass_delete'], 'doing_something')) {
@@ -64,7 +99,8 @@ class Fuzz_Mass_Delete{
 		?>
 		<div class="wrap">
 			<h2>Your Plugin Page Title</h2>
-			<a href="<?php print wp_nonce_url(admin_url('options.php?page=fuzz-mass-delete'), 'doing_something', 'fuzz_mass_delete');?>">Delete all content</a>
+			<a href="<?php print wp_nonce_url(admin_url('options.php?page=fuzz-mass-delete'), 'doing_something', 'fuzz_mass_delete');?>">Delete all content</a></br>
+			<a href="<?php print wp_nonce_url(admin_url('options.php?page=fuzz-mass-delete'), 'doing_something', 'fuzz_reset_theme_options');?>">Reset theme options</a></br>
 		</div>
 
 	<?php

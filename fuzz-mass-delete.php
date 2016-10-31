@@ -23,9 +23,9 @@ class Fuzz_Mass_Delete{
 		$options_field = ZN()->theme_data['options_prefix'];
 		$saved_values = array();
 
-		$file =  THEME_BASE."/template_helpers/dummy_content/theme_options.txt";
+		$file =  dirname( __FILE__ ) ."/theme_options.txt";
 		if( ! is_file( $file ) ) {
-			include(THEME_BASE.'/template_helpers/options/theme-options.php');
+			include( THEME_BASE.'/template_helpers/options/theme-options.php');
 
 			foreach ( $admin_options as $key => $option ) {
 
@@ -40,7 +40,7 @@ class Fuzz_Mass_Delete{
 			$data = file_get_contents( $file );
 			$saved_values = json_decode( $data, true );
 		}
-				print_z( $file );
+
 		update_option( $options_field , $saved_values );
 		generate_options_css();
 		ZN()->pagebuilder->refresh_pb_data();

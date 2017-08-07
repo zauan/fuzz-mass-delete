@@ -20,7 +20,7 @@ class Fuzz_Mass_Delete{
 			return 'Nonce not good';
 		}
 
-		$options_field = ZN()->theme_data['options_prefix'];
+		$options_field = ZNHGTFW()->getThemeDbId();
 		$saved_values = array();
 
 		$file =  dirname( __FILE__ ) ."/theme_options.txt";
@@ -42,8 +42,8 @@ class Fuzz_Mass_Delete{
 		}
 
 		update_option( $options_field , $saved_values );
-		generate_options_css();
-		ZN()->pagebuilder->refresh_pb_data();
+		ZNHGFW()->getComponent('scripts-manager')->deleteDynamicCss();
+		ZNB()->scripts_manager->clearBuilderCache();
 
 
 	}
